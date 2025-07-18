@@ -43,7 +43,7 @@ export function BoyfriendBot() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [userName, setUserName] = React.useState("You");
-  const [botName, setBotName] = React.useState("Kindred");
+  const [botName, setBotName] = React.useState("Love.ly");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   const [tempUserName, setTempUserName] = React.useState(userName);
   const [tempBotName, setTempBotName] = React.useState(botName);
@@ -168,7 +168,7 @@ export function BoyfriendBot() {
           </Button>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="h-full" ref={viewportRef}>
+          <ScrollArea className="h-full" viewportRef={viewportRef}>
             <div className="p-4 space-y-4">
               {messages.map((message) => (
                 <ChatMessage key={message.id} message={message} botName={botName} userName={userName} />

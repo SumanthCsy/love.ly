@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kindred",
+  title: "Love.ly",
   description: "Your digital confidante.",
 };
 
