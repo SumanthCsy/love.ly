@@ -1,5 +1,5 @@
-import { LandingPage } from "@/components/landing-page";
+import { SplashScreen } from "@/components/splash-screen";
 
 export default function Home() {
-  return <LandingPage />;
+  return <SplashScreen />;
 }

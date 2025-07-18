@@ -32,9 +32,6 @@ export function LandingPage() {
   const [heartStyles, setHeartStyles] = React.useState<HeartStyle[]>([]);
 
   React.useEffect(() => {
-    document.body.style.transition = 'opacity 0.3s ease-in-out';
-    document.body.style.opacity = '1';
-
     // Generate heart styles only on the client
     const styles = Array.from({ length: 15 }).map(() => ({
       left: `${Math.random() * 100}%`,
@@ -70,6 +67,7 @@ export function LandingPage() {
             key={i}
             className="absolute text-primary/20 animate-pulse"
             style={style}
+            fill="currentColor"
           />
         ))}
       </div>
@@ -84,7 +82,7 @@ export function LandingPage() {
           </p>
         </div>
 
-        <Card className="w-full max-w-md shadow-2xl animate-in fade-in-50 slide-in-from-bottom-10 duration-700">
+        <Card className="w-full max-w-md shadow-2xl animate-in fade-in-50 slide-in-from-bottom-10 duration-700 bg-card/80 backdrop-blur-sm">
           <form onSubmit={handleStartChatting}>
             <CardHeader>
               <CardTitle>Create Your Space</CardTitle>
@@ -123,17 +121,17 @@ export function LandingPage() {
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 max-w-4xl">
-           <div className="flex flex-col items-center space-y-2 text-center">
+           <div className="flex flex-col items-center space-y-2 text-center p-4 rounded-lg bg-card/60 backdrop-blur-sm">
              <Sparkles className="h-10 w-10 text-primary" />
              <h3 className="font-semibold">Always Understands</h3>
              <p className="text-sm text-muted-foreground">Crafts replies that feel just right, matching the mood and moment perfectly.</p>
            </div>
-           <div className="flex flex-col items-center space-y-2 text-center">
+           <div className="flex flex-col items-center space-y-2 text-center p-4 rounded-lg bg-card/60 backdrop-blur-sm">
              <MessageSquare className="h-10 w-10 text-primary" />
              <h3 className="font-semibold">Natural Conversation</h3>
              <p className="text-sm text-muted-foreground">Chat flows naturally, with wit and warmth, just like a real heart-to-heart.</p>
            </div>
-           <div className="flex flex-col items-center space-y-2 text-center">
+           <div className="flex flex-col items-center space-y-2 text-center p-4 rounded-lg bg-card/60 backdrop-blur-sm">
              <Heart className="h-10 w-10 text-primary" />
              <h3 className="font-semibold">Strengthens Bonds</h3>
              <p className="text-sm text-muted-foreground">Designed to make you feel heard, loved, and closer than ever.</p>
