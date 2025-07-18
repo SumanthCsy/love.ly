@@ -67,7 +67,7 @@ Each message should be read with attention to emotional tone and intent.
 {{#if conversationHistory}}
 Here's the previous conversation:
 {{#each conversationHistory}}
-{{#if (this.sender == "user")}}
+{{#if (eq this.sender "user")}}
 Girlfriend: {{{this.text}}}
 {{else}}
 You: {{{this.text}}}
@@ -124,6 +124,9 @@ const rememberWhatsappConversationFlow = ai.defineFlow(
     name: 'rememberWhatsappConversationFlow',
     inputSchema: RememberWhatsappConversationInputSchema,
     outputSchema: RememberWhatsappConversationOutputSchema,
+    knownHelpers: {
+      eq: (a, b) => a === b,
+    },
   },
   async (input) => {
     const {output} = await prompt(input);
