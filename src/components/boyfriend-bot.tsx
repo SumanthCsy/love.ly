@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, Send, Settings, User } from "lucide-react";
 import { ChatMessage, TypingIndicator } from "./chat-message";
+import { Skeleton } from "./ui/skeleton";
 
 export function BoyfriendBot() {
   const { toast } = useToast();
@@ -40,13 +41,14 @@ export function BoyfriendBot() {
     },
   ]);
   const [input, setInput] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isResponding, setIsResponding] = React.useState(false);
+  const [isComponentLoading, setIsComponentLoading] = React.useState(true);
 
-  const [userName, setUserName] = React.useState("You");
-  const [botName, setBotName] = React.useState("Love.ly");
+  const [userName, setUserName] = React.useState("");
+  const [botName, setBotName] = React.useState("");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
-  const [tempUserName, setTempUserName] = React.useState(userName);
-  const [tempBotName, setTempBotName] = React.useState(botName);
+  const [tempUserName, setTempUserName] = React.useState("");
+  const [tempBotName, setTempBotName] = React.useState("");
   
   const viewportRef = React.useRef<HTMLDivElement>(null);
 
@@ -61,6 +63,7 @@ export function BoyfriendBot() {
       setBotName(storedBotName);
       setTempUserName(storedUserName);
       setTempBotName(storedBotName);
+      setIsComponentLoading(false);
     }
   }, [router]);
 
@@ -71,7 +74,7 @@ export function BoyfriendBot() {
         behavior: "smooth",
       });
     }
-  }, [messages, isLoading]);
+  }, [messages, isResponding]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -81,7 +84,7 @@ export function BoyfriendBot() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isResponding) return;
 
     const newUserMessage: Message = {
       id: crypto.randomUUID(),
@@ -91,7 +94,7 @@ export function BoyfriendBot() {
 
     setMessages((prev) => [...prev, newUserMessage]);
     setInput("");
-    setIsLoading(true);
+    setIsResponding(true);
 
     try {
       const conversationHistory = messages.map((msg) => ({
@@ -123,7 +126,7 @@ export function BoyfriendBot() {
       });
        setMessages(prev => prev.slice(0, prev.length -1));
     } finally {
-      setIsLoading(false);
+      setIsResponding(false);
     }
   };
 
@@ -139,8 +142,29 @@ export function BoyfriendBot() {
     });
   };
 
-  if (!userName || !botName) {
-    return null; // or a loading spinner
+  if (isComponentLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Card className="w-full max-w-lg h-[95vh] max-h-[700px] grid grid-rows-[auto,1fr,auto] rounded-2xl p-4">
+          <div className="flex items-center gap-4 border-b pb-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[150px]" />
+              <Skeleton className="h-4 w-[100px]" />
+            </div>
+          </div>
+          <div className="p-4 space-y-4">
+            <Skeleton className="h-10 w-3/4 rounded-xl" />
+            <Skeleton className="h-10 w-3/4 rounded-xl ml-auto" />
+             <Skeleton className="h-10 w-1/2 rounded-xl" />
+          </div>
+          <div className="flex w-full items-center gap-2 pt-4 border-t">
+            <Skeleton className="flex-1 h-10 rounded-xl" />
+            <Skeleton className="h-10 w-10 rounded-full" />
+          </div>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -173,7 +197,7 @@ export function BoyfriendBot() {
               {messages.map((message) => (
                 <ChatMessage key={message.id} message={message} botName={botName} userName={userName} />
               ))}
-              {isLoading && <TypingIndicator />}
+              {isResponding && <TypingIndicator />}
             </div>
           </ScrollArea>
         </CardContent>
@@ -194,13 +218,13 @@ export function BoyfriendBot() {
                   handleSendMessage(e as any);
                 }
               }}
-              disabled={isLoading}
+              disabled={isResponding}
             />
             <Button
               type="submit"
               size="icon"
               className="rounded-full w-10 h-10 bg-primary hover:bg-primary/90 transition-transform active:scale-95"
-              disabled={isLoading || !input.trim()}
+              disabled={isResponding || !input.trim()}
               aria-label="Send message"
             >
               <Send className="h-5 w-5" />
