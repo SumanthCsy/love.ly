@@ -53,18 +53,21 @@ export function BoyfriendBot() {
   const viewportRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    // This effect runs only on the client
     const storedUserName = localStorage.getItem("userName");
     const storedBotName = localStorage.getItem("botName");
 
-    if (!storedUserName || !storedBotName) {
-      router.push("/");
-    } else {
+    if (storedUserName && storedBotName) {
       setUserName(storedUserName);
       setBotName(storedBotName);
       setTempUserName(storedUserName);
       setTempBotName(storedBotName);
-      setIsComponentLoading(false);
+    } else {
+      // If no names are found, redirect to the setup page
+      router.push("/");
     }
+    // We can now safely say the component has loaded its client-side data
+    setIsComponentLoading(false);
   }, [router]);
 
   React.useEffect(() => {
@@ -144,7 +147,7 @@ export function BoyfriendBot() {
 
   if (isComponentLoading) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
+      <div className="flex h-screen w-full items-center justify-center bg-background p-4">
         <Card className="w-full max-w-lg h-[95vh] max-h-[700px] grid grid-rows-[auto,1fr,auto] rounded-2xl p-4">
           <div className="flex items-center gap-4 border-b pb-4">
             <Skeleton className="h-12 w-12 rounded-full" />
