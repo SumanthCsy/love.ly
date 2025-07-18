@@ -50,13 +50,11 @@ export function LandingPage() {
     setIsLoading(true);
     localStorage.setItem("userName", userName || "You");
     localStorage.setItem("botName", botName || "Love.ly");
-    
-    // Quick fade out before navigating
-    document.body.style.transition = 'opacity 0.3s ease-out';
-    document.body.style.opacity = '0';
-    setTimeout(() => {
+
+    // Navigate to chat page
+    // No longer using fade out effect
+
       router.push("/chat");
-    }, 300);
   };
 
   return (

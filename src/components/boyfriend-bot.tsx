@@ -170,7 +170,7 @@ export function BoyfriendBot() {
 
   return (
     <>
-      <Card className="w-full max-w-lg h-[95vh] max-h-[700px] grid grid-rows-[auto,1fr,auto] rounded-2xl shadow-lg border-primary/20 bg-card/80 backdrop-blur-sm">
+      <Card className="relative w-full max-w-lg h-[95vh] max-h-[700px] grid grid-rows-[auto,1fr,auto] rounded-2xl shadow-lg border-primary/20 bg-card/80 backdrop-blur-sm">
         <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
           <div className="flex items-center gap-4">
             <Avatar className="h-12 w-12 border-2 border-primary/50">
@@ -192,7 +192,7 @@ export function BoyfriendBot() {
             <Settings className="h-5 w-5 text-muted-foreground" />
           </Button>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-hidden">
           <ScrollArea className="h-full" viewportRef={viewportRef}>
             <div className="p-4 space-y-4">
               {messages.map((message) => (
