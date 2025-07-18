@@ -5,14 +5,14 @@
  *
  * - rememberWhatsappConversation - A function that handles the conversation and response generation process.
  * - RememberWhatsappConversationInput - The input type for the rememberWhatsappConversation function.
- * - RememberWhatsappConversationOutput - The return type for the rememberWhatsappConversation function.
+ * - RememberWhatsappConversationOutput - The return type for the rememberWhatsappconversation function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const RememberWhatsappConversationInputSchema = z.object({
-  message: z.string().describe('The girlfriend\'s message.'),
+  message: z.string().describe("The girlfriend's message."),
   conversationHistory: z.array(z.object({
     sender: z.enum(['user', 'bot']),
     text: z.string(),
@@ -21,7 +21,7 @@ const RememberWhatsappConversationInputSchema = z.object({
 export type RememberWhatsappConversationInput = z.infer<typeof RememberWhatsappConversationInputSchema>;
 
 const RememberWhatsappConversationOutputSchema = z.object({
-  response: z.string().describe('The bot\'s response to the girlfriend\'s message.'),
+  response: z.string().describe("The bot's response to the girlfriend's message."),
 });
 export type RememberWhatsappConversationOutput = z.infer<typeof RememberWhatsappConversationOutputSchema>;
 
@@ -55,11 +55,11 @@ Each message should be read with attention to emotional tone and intent.
 {{#if conversationHistory}}
 Here's the previous conversation:
 {{#each conversationHistory}}
-{{#ifCond sender '==' 'user'}}
+{{#if (eq sender "user")}}
 Girlfriend: {{{text}}}
 {{else}}
 You: {{{text}}}
-{{/ifCond}}
+{{/if}}
 {{/each}}
 {{else}}
 There is no conversation history.
@@ -105,30 +105,6 @@ Prioritize comfort, trust, fun, and emotional closeness in every response.
 
 Message from Girlfriend: {{{message}}}
 `,
-  helpers: {
-    ifCond: function (v1: any, operator: string, v2: any, options: any) {
-      switch (operator) {
-        case '==':
-          return (v1 == v2) ? options.fn(this) : options.inverse(this);
-        case '===':
-          return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '!=':
-          return (v1 != v2) ? options.fn(this) : options.inverse(this);
-        case '!==':
-          return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-        case '>':
-          return (v1 > v2) ? options.fn(this) : options.inverse(this);
-        case '>=':
-          return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-        case '<':
-          return (v1 < v2) ? options.fn(this) : options.inverse(this);
-        case '<=':
-          return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-        default:
-          return options.inverse(this);
-      }
-    }
-  }
 });
 
 const rememberWhatsappConversationFlow = ai.defineFlow(
