@@ -3,20 +3,22 @@
 import type { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Heart } from "lucide-react";
+import { Heart, User } from "lucide-react";
 
 interface ChatMessageProps {
   message: Message;
+  userName: string;
+  botName: string;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, userName, botName }: ChatMessageProps) {
   const { role, content } = message;
   const isBot = role === "bot";
 
   return (
     <div
       className={cn(
-        "flex items-end gap-2",
+        "flex items-end gap-2 animate-in fade-in-25",
         isBot ? "justify-start" : "justify-end"
       )}
     >
@@ -37,6 +39,13 @@ export function ChatMessage({ message }: ChatMessageProps) {
       >
         <p className="whitespace-pre-wrap">{content}</p>
       </div>
+       {!isBot && (
+        <Avatar className="h-8 w-8 self-start">
+          <AvatarFallback className="bg-primary/50 text-primary-foreground">
+            <User className="h-4 w-4" />
+          </AvatarFallback>
+        </Avatar>
+      )}
     </div>
   );
 }

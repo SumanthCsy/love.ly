@@ -1,9 +1,5 @@
-import { BoyfriendBot } from "@/components/boyfriend-bot";
+import { LandingPage } from "@/components/landing-page";
 
 export default function Home() {
-  return (
-    <div className="flex h-screen w-full items-center justify-center bg-background p-4">
-      <BoyfriendBot />
-    </div>
-  );
+  return <LandingPage />;
 }
