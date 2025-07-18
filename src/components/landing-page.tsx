@@ -23,6 +23,7 @@ export function LandingPage() {
 
   const handleStartChatting = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userName.trim() || !botName.trim()) return;
     setIsLoading(true);
     localStorage.setItem("userName", userName || "You");
     localStorage.setItem("botName", botName || "Love.ly");
@@ -85,6 +86,7 @@ export function LandingPage() {
                   placeholder="e.g., Love.ly, Alex..."
                   value={botName}
                   onChange={(e) => setBotName(e.target.value)}
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -94,6 +96,7 @@ export function LandingPage() {
                   placeholder="e.g., Sam, Jessie..."
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
+                  required
                 />
               </div>
             </CardContent>
