@@ -1,4 +1,3 @@
-// This is an example file.
 'use server';
 /**
  * @fileOverview A flow that remembers past conversations with your girlfriend and uses that information to generate responses.

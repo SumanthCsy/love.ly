@@ -30,12 +30,12 @@ export function BoyfriendBot() {
   const [input, setInput] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+  const viewportRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
+    if (viewportRef.current) {
+      viewportRef.current.scrollTo({
+        top: viewportRef.current.scrollHeight,
         behavior: "smooth",
       });
     }
@@ -63,7 +63,7 @@ export function BoyfriendBot() {
 
     try {
       const conversationHistory = messages.map((msg) => ({
-        sender: msg.role,
+        sender: msg.role === 'user' ? ('user' as const) : ('bot' as const),
         text: msg.content,
       }));
 
@@ -115,7 +115,7 @@ export function BoyfriendBot() {
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-full" viewportRef={scrollAreaRef}>
+        <ScrollArea className="h-full" viewportRef={viewportRef}>
           <div className="p-4 space-y-4">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
