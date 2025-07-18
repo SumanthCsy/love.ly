@@ -13,19 +13,32 @@ import {z} from 'genkit';
 
 const RememberWhatsappConversationInputSchema = z.object({
   message: z.string().describe("The girlfriend's message."),
-  conversationHistory: z.array(z.object({
-    sender: z.enum(['user', 'bot']),
-    text: z.string(),
-  })).optional().describe('The history of the conversation with the girlfriend.'),
+  conversationHistory: z
+    .array(
+      z.object({
+        sender: z.enum(['user', 'bot']),
+        text: z.string(),
+      })
+    )
+    .optional()
+    .describe('The history of the conversation with the girlfriend.'),
 });
-export type RememberWhatsappConversationInput = z.infer<typeof RememberWhatsappConversationInputSchema>;
+export type RememberWhatsappConversationInput = z.infer<
+  typeof RememberWhatsappConversationInputSchema
+>;
 
 const RememberWhatsappConversationOutputSchema = z.object({
-  response: z.string().describe("The bot's response to the girlfriend's message."),
+  response: z
+    .string()
+    .describe("The bot's response to the girlfriend's message."),
 });
-export type RememberWhatsappConversationOutput = z.infer<typeof RememberWhatsappConversationOutputSchema>;
+export type RememberWhatsappConversationOutput = z.infer<
+  typeof RememberWhatsappConversationOutputSchema
+>;
 
-export async function rememberWhatsappConversation(input: RememberWhatsappConversationInput): Promise<RememberWhatsappConversationOutput> {
+export async function rememberWhatsappConversation(
+  input: RememberWhatsappConversationInput
+): Promise<RememberWhatsappConversationOutput> {
   return rememberWhatsappConversationFlow(input);
 }
 
@@ -55,10 +68,10 @@ Each message should be read with attention to emotional tone and intent.
 {{#if conversationHistory}}
 Here's the previous conversation:
 {{#each conversationHistory}}
-{{#if (eq sender "user")}}
-Girlfriend: {{{text}}}
+{{#if (this.sender == "user")}}
+Girlfriend: {{{this.text}}}
 {{else}}
-You: {{{text}}}
+You: {{{this.text}}}
 {{/if}}
 {{/each}}
 {{else}}
@@ -113,7 +126,7 @@ const rememberWhatsappConversationFlow = ai.defineFlow(
     inputSchema: RememberWhatsappConversationInputSchema,
     outputSchema: RememberWhatsappConversationOutputSchema,
   },
-  async input => {
+  async (input) => {
     const {output} = await prompt(input);
     return output!;
   }
