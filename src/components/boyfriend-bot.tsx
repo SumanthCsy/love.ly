@@ -62,12 +62,11 @@ export function BoyfriendBot() {
       setBotName(storedBotName);
       setTempUserName(storedUserName);
       setTempBotName(storedBotName);
+      setIsComponentLoading(false);
     } else {
       // If no names are found, redirect to the setup page
       router.push("/");
     }
-    // We can now safely say the component has loaded its client-side data
-    setIsComponentLoading(false);
   }, [router]);
 
   React.useEffect(() => {
@@ -107,6 +106,8 @@ export function BoyfriendBot() {
 
       const result = await rememberWhatsappConversation({
         message: input,
+        userName: userName,
+        botName: botName,
         conversationHistory,
       });
 

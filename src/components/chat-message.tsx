@@ -31,7 +31,7 @@ export function ChatMessage({ message, userName, botName }: ChatMessageProps) {
       )}
       <div
         className={cn(
-          "max-w-xs md:max-w-md lg:max-w-lg rounded-2xl px-4 py-2 text-foreground shadow-sm",
+          "max-w-xs md:max-w-md lg:max-w-lg rounded-2xl px-4 py-2 text-foreground shadow-sm break-words",
           isBot
             ? "bg-accent/80 rounded-bl-none"
             : "bg-primary/80 text-primary-foreground rounded-br-none"

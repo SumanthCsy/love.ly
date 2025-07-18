@@ -52,6 +52,7 @@ export function LandingPage() {
     localStorage.setItem("botName", botName || "Love.ly");
     
     // Quick fade out before navigating
+    document.body.style.transition = 'opacity 0.3s ease-out';
     document.body.style.opacity = '0';
     setTimeout(() => {
       router.push("/chat");
@@ -74,7 +75,7 @@ export function LandingPage() {
 
       <div className="z-10 flex flex-col items-center text-center space-y-8">
         <div className="space-y-4">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-pink-500">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-400">
             Love.ly
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground">
