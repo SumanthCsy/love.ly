@@ -15,11 +15,37 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Heart, MessageSquare, Sparkles } from "lucide-react";
 
+interface HeartStyle {
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+  animationDelay: string;
+  animationDuration: string;
+}
+
 export function LandingPage() {
   const router = useRouter();
   const [userName, setUserName] = React.useState("");
   const [botName, setBotName] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+  const [heartStyles, setHeartStyles] = React.useState<HeartStyle[]>([]);
+
+  React.useEffect(() => {
+    document.body.style.transition = 'opacity 0.3s ease-in-out';
+    document.body.style.opacity = '1';
+
+    // Generate heart styles only on the client
+    const styles = Array.from({ length: 15 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      width: `${Math.random() * 3 + 1}rem`,
+      height: `${Math.random() * 3 + 1}rem`,
+      animationDelay: `${Math.random() * 5}s`,
+      animationDuration: `${Math.random() * 5 + 5}s`,
+    }));
+    setHeartStyles(styles);
+  }, []);
 
   const handleStartChatting = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,27 +61,15 @@ export function LandingPage() {
     }, 300);
   };
 
-  React.useEffect(() => {
-     document.body.style.transition = 'opacity 0.3s ease-in-out';
-     document.body.style.opacity = '1';
-  }, []);
-
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-br from-background via-rose-50 to-rose-100 p-4 flex flex-col items-center justify-center overflow-hidden">
        {/* Floating hearts background */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {heartStyles.map((style, i) => (
           <Heart
             key={i}
             className="absolute text-primary/20 animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 3 + 1}rem`,
-              height: `${Math.random() * 3 + 1}rem`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${Math.random() * 5 + 5}s`,
-            }}
+            style={style}
           />
         ))}
       </div>
