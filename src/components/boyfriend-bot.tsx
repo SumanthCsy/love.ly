@@ -4,7 +4,6 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { rememberWhatsappConversation } from "@/ai/flows/remember-whatsapp-conversation";
 import type { Message } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Send, Settings, User } from "lucide-react";
+import { Heart, Send, Settings } from "lucide-react";
 import { ChatMessage, TypingIndicator } from "./chat-message";
 import { Skeleton } from "./ui/skeleton";
 
@@ -53,7 +52,6 @@ export function BoyfriendBot() {
   const viewportRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    // This effect runs only on the client
     const storedUserName = localStorage.getItem("userName");
     const storedBotName = localStorage.getItem("botName");
 
@@ -64,7 +62,6 @@ export function BoyfriendBot() {
       setTempBotName(storedBotName);
       setIsComponentLoading(false);
     } else {
-      // If no names are found, redirect to the setup page
       router.push("/");
     }
   }, [router]);
@@ -100,8 +97,8 @@ export function BoyfriendBot() {
 
     try {
       const conversationHistory = messages.map((msg) => ({
-        sender: msg.role as 'user' | 'bot',
-        text: msg.content,
+        role: msg.role as 'user' | 'bot',
+        content: msg.content,
       }));
 
       const result = await rememberWhatsappConversation({

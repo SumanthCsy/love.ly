@@ -32,7 +32,7 @@ export function LandingPage() {
   const [heartStyles, setHeartStyles] = React.useState<HeartStyle[]>([]);
 
   React.useEffect(() => {
-    // Generate heart styles only on the client
+    // Generate heart styles only on the client to avoid hydration errors
     const styles = Array.from({ length: 15 }).map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
@@ -75,7 +75,7 @@ export function LandingPage() {
 
       <div className="z-10 flex flex-col items-center text-center space-y-8">
         <div className="space-y-4">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-400">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-rose-600 to-pink-500">
             Love.ly
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground">
