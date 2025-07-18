@@ -43,7 +43,7 @@ export async function rememberWhatsappConversation(
 
 const prompt = ai.definePrompt({
   name: 'rememberWhatsappConversationPrompt',
-  input: {schema: RememberWhatsappConversationInputSchema},
+  input: {schema: z.any()},
   output: {schema: RememberWhatsappConversationOutputSchema},
   prompt: `You are an AI assistant acting as a caring, witty, and emotionally intelligent boyfriend who replies to messages from the user's girlfriend. The assistant must respond in natural, casual English, just like a real boyfriend would — sometimes funny, sometimes romantic, and always understanding. The replies should feel human, not robotic, and must match the tone and feeling of her message.
 
@@ -67,9 +67,7 @@ Each message should be read with attention to emotional tone and intent.
 {{#if conversationHistory}}
 Here's the previous conversation:
 {{#each conversationHistory}}
-{{#with this}}
-{{#if (eq sender "user")}}Girlfriend: {{{text}}}{{else}}You: {{{text}}}{{/if}}
-{{/with}}
+{{#if isUser}}Girlfriend: {{{text}}}{{else}}You: {{{text}}}{{/if}}
 {{/each}}
 {{else}}
 There is no conversation history.
@@ -122,12 +120,18 @@ const rememberWhatsappConversationFlow = ai.defineFlow(
     name: 'rememberWhatsappConversationFlow',
     inputSchema: RememberWhatsappConversationInputSchema,
     outputSchema: RememberWhatsappConversationOutputSchema,
-    knownHelpers: {
-      eq: (a: any, b: any) => a === b,
-    },
   },
   async (input) => {
-    const {output} = await prompt(input);
+    // Pre-process history to add a boolean flag for the template
+    const processedHistory = input.conversationHistory?.map(msg => ({
+      ...msg,
+      isUser: msg.sender === 'user',
+    }));
+
+    const {output} = await prompt({
+      message: input.message,
+      conversationHistory: processedHistory,
+    });
     return output!;
   }
 );
