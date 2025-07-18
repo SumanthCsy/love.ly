@@ -67,7 +67,9 @@ Each message should be read with attention to emotional tone and intent.
 {{#if conversationHistory}}
 Here's the previous conversation:
 {{#each conversationHistory}}
-{{#if (eq this.sender "user")}}Girlfriend: {{{this.text}}}{{else}}You: {{{this.text}}}{{/if}}
+{{#with this}}
+{{#if (eq sender "user")}}Girlfriend: {{{text}}}{{else}}You: {{{text}}}{{/if}}
+{{/with}}
 {{/each}}
 {{else}}
 There is no conversation history.
@@ -120,7 +122,6 @@ const rememberWhatsappConversationFlow = ai.defineFlow(
     name: 'rememberWhatsappConversationFlow',
     inputSchema: RememberWhatsappConversationInputSchema,
     outputSchema: RememberWhatsappConversationOutputSchema,
-    // Add custom Handlebars helpers here.
     knownHelpers: {
       eq: (a: any, b: any) => a === b,
     },
