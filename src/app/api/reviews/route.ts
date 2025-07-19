@@ -1,7 +1,17 @@
 
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, serverTimestamp, query, orderBy, Timestamp } from 'firebase/firestore';
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  serverTimestamp, 
+  query, 
+  orderBy, 
+  Timestamp,
+  doc,
+  deleteDoc
+} from 'firebase/firestore';
 import { z } from 'zod';
 
 export interface Review {
@@ -19,50 +29,48 @@ const reviewSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  console.log("API ROUTE: Received POST request.");
   try {
     const json = await request.json();
-    console.log("API ROUTE: Request body parsed:", json);
-
     const parsedData = reviewSchema.safeParse(json);
 
     if (!parsedData.success) {
-      console.error("API ROUTE: Validation failed.", parsedData.error.flatten());
       return NextResponse.json({ error: "Validation failed", details: parsedData.error.flatten() }, { status: 400 });
     }
 
-    console.log("API ROUTE: Data validated successfully. Writing to Firestore...");
-    const docRef = await addDoc(collection(db, "reviews"), {
-      ...parsedData.data,
-      createdAt: serverTimestamp(),
-    });
-    console.log("API ROUTE: Successfully written to Firestore with ID:", docRef.id);
+    const dataToSave: { name: string; rating: number; review?: string; createdAt: any } = {
+        name: parsedData.data.name,
+        rating: parsedData.data.rating,
+        createdAt: serverTimestamp(),
+    };
+
+    // Only include review if it's not empty
+    if (parsedData.data.review && parsedData.data.review.trim() !== '') {
+        dataToSave.review = parsedData.data.review;
+    }
+
+    const docRef = await addDoc(collection(db, "reviews"), dataToSave);
 
     return NextResponse.json({ message: "Review submitted successfully!", id: docRef.id }, { status: 201 });
 
   } catch (error) {
-    console.error("API ROUTE: An error occurred in the POST handler:", error);
+    console.error("API POST Error:", error);
     const errorMessage = error instanceof Error ? error.message : "An unknown server error occurred.";
     return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
   }
 }
 
 export async function GET(request: Request) {
-    console.log("API ROUTE: Received GET request.");
     try {
         const reviewsCollection = collection(db, "reviews");
         const q = query(reviewsCollection, orderBy("createdAt", "desc"));
         
-        console.log("API ROUTE: Fetching documents from Firestore...");
         const querySnapshot = await getDocs(q);
-        console.log(`API ROUTE: Found ${querySnapshot.docs.length} documents.`);
 
         const reviews: Review[] = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const createdAt = data.createdAt;
             
-            // Firestore timestamp needs to be converted to a JS Date object
             const createdAtDate = createdAt instanceof Timestamp ? createdAt.toDate() : new Date();
 
             reviews.push({
@@ -77,8 +85,28 @@ export async function GET(request: Request) {
         return NextResponse.json(reviews, { status: 200 });
 
     } catch (error) {
-        console.error("API ROUTE: Failed to fetch reviews:", error);
+        console.error("API GET Error:", error);
         const errorMessage = error instanceof Error ? error.message : "An unknown server error occurred";
         return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
     }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: "Review ID is required" }, { status: 400 });
+    }
+
+    const reviewDocRef = doc(db, "reviews", id);
+    await deleteDoc(reviewDocRef);
+
+    return NextResponse.json({ message: "Review deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("API DELETE Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown server error occurred.";
+    return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
+  }
 }
