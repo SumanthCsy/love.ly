@@ -1,3 +1,4 @@
+
 // Allow using client-side functionality
 "use client";
 
