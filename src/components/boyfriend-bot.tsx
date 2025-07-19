@@ -68,7 +68,6 @@ export function BoyfriendBot() {
       router.push("/");
     }
 
-    // Open rating dialog after 1 minute if it hasn't been shown before
     const hasRated = localStorage.getItem('hasRated');
     if (!hasRated) {
         const timer = setTimeout(() => {

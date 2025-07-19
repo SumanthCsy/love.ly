@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -25,9 +26,10 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Settings, Users } from "lucide-react";
+import { Send, Settings, Users, Star } from "lucide-react";
 import { ChatMessage, TypingIndicator } from "./chat-message";
 import { Skeleton } from "./ui/skeleton";
+import { RatingDialog } from "./rating-dialog";
 
 export function FriendsChat() {
   const { toast } = useToast();
@@ -46,6 +48,7 @@ export function FriendsChat() {
   const [userName, setUserName] = React.useState("");
   const [friendName, setFriendName] = React.useState("");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
+  const [isRatingOpen, setIsRatingOpen] = React.useState(false);
   const [tempUserName, setTempUserName] = React.useState("");
   const [tempFriendName, setTempFriendName] = React.useState("");
   
@@ -59,7 +62,6 @@ export function FriendsChat() {
       setUserName(storedUserName);
       setTempUserName(storedUserName);
     } else {
-        // if no user name, they shouldn't be here.
         router.push('/')
     }
 
@@ -67,7 +69,6 @@ export function FriendsChat() {
       setFriendName(storedFriendName);
       setTempFriendName(storedFriendName);
     } else {
-        // Set a default if not present
         const defaultFriendName = "Alex";
         setFriendName(defaultFriendName)
         setTempFriendName(defaultFriendName)
@@ -199,9 +200,14 @@ export function FriendsChat() {
               </div>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setIsSettingsOpen(true)}>
-            <Settings className="h-5 w-5 text-muted-foreground" />
-          </Button>
+          <div>
+             <Button variant="ghost" size="icon" onClick={() => setIsRatingOpen(true)}>
+              <Star className="h-5 w-5 text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setIsSettingsOpen(true)}>
+                <Settings className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="p-0 overflow-hidden">
           <ScrollArea className="h-full" viewportRef={viewportRef}>
@@ -282,6 +288,7 @@ export function FriendsChat() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <RatingDialog isOpen={isRatingOpen} onOpenChange={setIsRatingOpen} userName={userName} />
     </>
   );
 }
