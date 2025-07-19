@@ -55,21 +55,6 @@ export function LandingPage() {
     router.push("/chat");
   };
 
-  const handleStartFriendChat = () => {
-      const yourNameInput = document.getElementById("your-name") as HTMLInputElement;
-      if (!userName.trim()) {
-          yourNameInput?.focus();
-          yourNameInput?.reportValidity();
-          return;
-      }
-      localStorage.setItem("userName", userName || "You");
-      // Let's set a default friend name if not set
-      if (!localStorage.getItem("friendName")) {
-        localStorage.setItem("friendName", "Alex");
-      }
-      router.push("/friends-chat");
-  }
-
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-br from-background via-rose-50 to-rose-100 p-4 flex flex-col items-center justify-center overflow-hidden">
        {/* Floating hearts background */}
@@ -85,40 +70,36 @@ export function LandingPage() {
       </div>
 
       <div className="z-10 flex flex-col items-center text-center space-y-8">
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-rose-600 to-pink-500">
             Love.ly
           </h1>
-          <p className="max-w-xl text-lg text-muted-foreground">
+          <p className="max-w-xl text-lg text-muted-foreground pt-4">
             Rediscover the magic of conversation. A space for words that warm the heart, spark a smile, and bring you closer.
           </p>
         </div>
         
-        <div className="w-full max-w-md space-y-4">
-             <div className="space-y-2 text-left">
-                <Label htmlFor="your-name">First, what's your name?</Label>
-                <Input
-                  id="your-name"
-                  placeholder="e.g., Sam, Jessie..."
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  required
-                />
-              </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-6 w-full max-w-4xl justify-center items-stretch">
-
-          <Card className="w-full md:w-1/2 shadow-2xl animate-in fade-in-50 slide-in-from-bottom-10 duration-700 bg-card/80 backdrop-blur-sm flex flex-col">
+        <div className="w-full max-w-md">
+          <Card className="w-full shadow-2xl animate-in fade-in-50 slide-in-from-bottom-10 duration-700 bg-card/80 backdrop-blur-sm flex flex-col">
             <form onSubmit={handleStartChatting} className="flex flex-col flex-grow">
               <CardHeader>
-                <CardTitle>Partner Chat</CardTitle>
+                <CardTitle>Start a New Chat</CardTitle>
                 <CardDescription>
-                  Who is your special someone?
+                  Enter your name and your partner's name to begin.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 flex-grow">
-                <div className="space-y-2">
+                 <div className="space-y-2 text-left">
+                    <Label htmlFor="your-name">Your Name</Label>
+                    <Input
+                      id="your-name"
+                      placeholder="e.g., Sam, Jessie..."
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      required
+                    />
+                  </div>
+                <div className="space-y-2 text-left">
                   <Label htmlFor="bot-name">Partner's Name</Label>
                   <Input
                     id="bot-name"
@@ -132,34 +113,11 @@ export function LandingPage() {
               </CardContent>
               <CardFooter>
                 <Button type="submit" className="w-full" disabled={isLoading || !userName || !botName}>
-                  {isLoading ? "Entering..." : "Start Partner Chat"}
+                  {isLoading ? "Entering..." : "Start Chat"}
                 </Button>
               </CardFooter>
             </form>
           </Card>
-          
-          <div className="hidden md:flex flex-col items-center justify-center">
-            <p className="text-muted-foreground">or</p>
-          </div>
-
-          <Card className="w-full md:w-1/2 shadow-2xl animate-in fade-in-50 slide-in-from-bottom-10 duration-700 bg-card/80 backdrop-blur-sm flex flex-col">
-              <CardHeader>
-                <CardTitle>Friend Chat</CardTitle>
-                <CardDescription>
-                  Talk with a platonic friend. You can change their name in settings.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow flex items-center justify-center">
-                 <p className="text-sm text-muted-foreground">Ready to chat with a friend?</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="secondary" onClick={handleStartFriendChat} className="w-full" disabled={!userName}>
-                    <Users className="mr-2 h-4 w-4" />
-                    Talk with a Friend
-                </Button>
-              </CardFooter>
-          </Card>
-
         </div>
 
 
