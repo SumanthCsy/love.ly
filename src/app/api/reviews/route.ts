@@ -23,7 +23,6 @@ const reviewSchema = z.object({
 export async function POST(request: Request) {
   try {
     const json = await request.json();
-    console.log("Received submission:", json);
 
     // Validate the incoming data
     const parsedData = reviewSchema.safeParse(json);
