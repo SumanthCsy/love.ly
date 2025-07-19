@@ -1,8 +1,8 @@
-// Allow using client-side functionality
+
 "use client";
 
 import * as React from "react";
-import type { Review } from "@/app/api/reviews/route"; // Import the Review type
+import type { Review } from "@/app/api/reviews/route"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,11 +15,10 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { KeyRound, LogIn, Star } from "lucide-react";
+import { KeyRound, LogIn, Star, Frown } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Component to display a single review
 function ReviewCard({ review }: { review: Review }) {
   return (
     <Card className="w-full">
@@ -46,25 +45,22 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
-// Main component for the reviews page
 export default function MyReviewsPage() {
   const { toast } = useToast();
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [reviews, setReviews] = React.useState<Review[]>([]);
-  const [isFetchingReviews, setIsFetchingReviews] = React.useState(false);
+  const [isFetchingReviews, setIsFetchingReviews] = React.useState(true); // Start fetching immediately
+  const [error, setError] = React.useState<string | null>(null);
 
-  // Handle password submission for authentication
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // This is a simple client-side check.
     if (password === "love.ly@admin0112") {
       toast({ title: "Access Granted", description: "Welcome, Admin!" });
       setIsAuthenticated(true);
-      fetchReviews();
+      // Reviews are already being fetched, no need to call fetchReviews() here
     } else {
       toast({
         variant: "destructive",
@@ -77,33 +73,38 @@ export default function MyReviewsPage() {
     setPassword("");
   };
 
-  // Fetch reviews from the API
-  const fetchReviews = async () => {
-    setIsFetchingReviews(true);
-    try {
-      const response = await fetch("/api/reviews");
-      if (!response.ok) {
-        throw new Error("Failed to fetch reviews");
+  React.useEffect(() => {
+    const fetchReviews = async () => {
+      setIsFetchingReviews(true);
+      setError(null);
+      try {
+        const response = await fetch("/api/reviews");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.details || "Failed to fetch reviews");
+        }
+        const data = await response.json();
+        setReviews(data);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        console.error(error);
+        setError(errorMessage);
+        toast({
+          variant: "destructive",
+          title: "Error Fetching Reviews",
+          description: errorMessage,
+        });
+      } finally {
+        setIsFetchingReviews(false);
       }
-      const data = await response.json();
-      setReviews(data);
-    } catch (error) {
-      console.error(error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not fetch reviews.",
-      });
-    } finally {
-      setIsFetchingReviews(false);
-    }
-  };
+    };
 
-  // Render loading state for reviews
-  if (isAuthenticated && isFetchingReviews) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center p-4 sm:p-8">
-        <h1 className="text-4xl font-headline font-bold mb-8">App Reviews</h1>
+    fetchReviews();
+  }, []);
+
+  const renderContent = () => {
+    if (isFetchingReviews) {
+      return (
         <div className="w-full max-w-2xl space-y-4">
             {[...Array(3)].map((_, i) => (
                  <Card key={i}>
@@ -120,64 +121,87 @@ export default function MyReviewsPage() {
                 </Card>
             ))}
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  // Render the authenticated view with reviews
-  if (isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center p-4 sm:p-8">
-        <h1 className="text-4xl font-headline font-bold mb-8">App Reviews</h1>
-        <div className="w-full max-w-2xl space-y-4">
-          {reviews.length > 0 ? (
-            reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
-            ))
-          ) : (
-            <p className="text-center text-muted-foreground">
-              No reviews submitted yet.
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // Render the login form if not authenticated
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <form onSubmit={handleLogin}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <KeyRound /> Admin Access
-            </CardTitle>
-            <CardDescription>
-              Enter the admin passkey to view user reviews.
+    if (error) {
+       return (
+        <Card className="w-full max-w-2xl text-center p-8">
+            <Frown className="mx-auto h-12 w-12 text-destructive" />
+            <CardTitle className="mt-4">Failed to Load Reviews</CardTitle>
+            <CardDescription className="mt-2">
+                There was an error fetching the reviews.
             </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="password">Passkey</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                required
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Verifying..." : "Log In"}
-              {!isLoading && <LogIn className="ml-2 h-4 w-4" />}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+            <CardContent className="mt-4 text-sm text-muted-foreground">
+                <p><strong>Error details:</strong> {error}</p>
+            </CardContent>
+        </Card>
+       );
+    }
+    
+    if (reviews.length > 0) {
+      return (
+        <div className="w-full max-w-2xl space-y-4">
+          {reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))}
+        </div>
+      );
+    }
+    
+    return (
+      <Card className="w-full max-w-2xl text-center p-8">
+            <CardTitle>No Reviews Yet</CardTitle>
+            <CardDescription className="mt-2">
+               When users submit reviews, they will appear here.
+            </CardDescription>
+        </Card>
+    );
+  };
+
+
+  if (!isAuthenticated) {
+     return (
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-sm">
+            <form onSubmit={handleLogin}>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                <KeyRound /> Admin Access
+                </CardTitle>
+                <CardDescription>
+                Enter the admin passkey to view user reviews.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-2">
+                <Label htmlFor="password">Passkey</Label>
+                <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    required
+                />
+                </div>
+            </CardContent>
+            <CardFooter>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Verifying..." : "Log In"}
+                {!isLoading && <LogIn className="ml-2 h-4 w-4" />}
+                </Button>
+            </CardFooter>
+            </form>
+        </Card>
+        </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col items-center p-4 sm:p-8">
+        <h1 className="text-4xl font-headline font-bold mb-8">App Reviews</h1>
+        {renderContent()}
     </div>
   );
 }
