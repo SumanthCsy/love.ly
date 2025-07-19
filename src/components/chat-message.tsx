@@ -50,12 +50,16 @@ export function ChatMessage({ message, userName, botName }: ChatMessageProps) {
   );
 }
 
-export function TypingIndicator() {
+interface TypingIndicatorProps {
+    botIcon?: React.ReactNode;
+}
+
+export function TypingIndicator({ botIcon }: TypingIndicatorProps) {
   return (
     <div className="flex items-end gap-2 justify-start">
       <Avatar className="h-8 w-8 self-start">
         <AvatarFallback className="bg-accent/50 text-accent-foreground">
-          <Heart className="h-4 w-4" />
+          {botIcon || <Heart className="h-4 w-4" />}
         </AvatarFallback>
       </Avatar>
       <div className="flex items-center space-x-1 rounded-2xl bg-accent/80 rounded-bl-none px-4 py-3">
