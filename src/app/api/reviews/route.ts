@@ -10,10 +10,12 @@ export interface Review extends WithId<Document> {
   createdAt: Date;
 }
 
+// FIX: The schema now correctly allows an empty string for the optional review.
+// The previous schema (`z.string().min(1).optional()`) would fail if an empty string was passed.
 const reviewSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   rating: z.number().min(1).max(5),
-  review: z.string().min(1).optional(),
+  review: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -22,6 +24,7 @@ export async function POST(request: Request) {
     const parsedData = reviewSchema.safeParse(json);
 
     if (!parsedData.success) {
+      console.error("Zod validation failed:", parsedData.error.flatten());
       return NextResponse.json({ error: parsedData.error.flatten() }, { status: 400 });
     }
 
