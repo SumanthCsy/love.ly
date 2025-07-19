@@ -25,9 +25,10 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Send, Settings } from "lucide-react";
+import { Heart, Send, Settings, Star } from "lucide-react";
 import { ChatMessage, TypingIndicator } from "./chat-message";
 import { Skeleton } from "./ui/skeleton";
+import { RatingDialog } from "./rating-dialog";
 
 export function BoyfriendBot() {
   const { toast } = useToast();
@@ -46,6 +47,7 @@ export function BoyfriendBot() {
   const [userName, setUserName] = React.useState("");
   const [botName, setBotName] = React.useState("");
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
+  const [isRatingOpen, setIsRatingOpen] = React.useState(false);
   const [tempUserName, setTempUserName] = React.useState("");
   const [tempBotName, setTempBotName] = React.useState("");
   
@@ -64,6 +66,17 @@ export function BoyfriendBot() {
     } else {
       router.push("/");
     }
+
+    // Open rating dialog after 1 minute
+    const timer = setTimeout(() => {
+        const hasRated = localStorage.getItem('hasRated');
+        if (!hasRated) {
+            setIsRatingOpen(true);
+            localStorage.setItem('hasRated', 'true');
+        }
+    }, 60000); // 1 minute
+
+    return () => clearTimeout(timer);
   }, [router]);
 
   React.useEffect(() => {
@@ -188,9 +201,14 @@ export function BoyfriendBot() {
               </div>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setIsSettingsOpen(true)}>
-            <Settings className="h-5 w-5 text-muted-foreground" />
-          </Button>
+          <div>
+            <Button variant="ghost" size="icon" onClick={() => setIsRatingOpen(true)}>
+              <Star className="h-5 w-5 text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setIsSettingsOpen(true)}>
+              <Settings className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="p-0 overflow-hidden">
           <ScrollArea className="h-full" viewportRef={viewportRef}>
@@ -271,6 +289,8 @@ export function BoyfriendBot() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      <RatingDialog isOpen={isRatingOpen} onOpenChange={setIsRatingOpen} userName={userName} />
     </>
   );
 }
