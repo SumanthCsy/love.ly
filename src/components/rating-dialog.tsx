@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -33,10 +34,8 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-        // If dialog is closed (skipped), mark as rated
-        if (!localStorage.getItem('hasRated')) {
-            localStorage.setItem('hasRated', 'true');
-        }
+        // If dialog is closed (skipped), mark as rated so it doesn't show again
+        localStorage.setItem('hasRated', 'true');
     }
     onOpenChange(open);
   }
@@ -112,7 +111,7 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
   }, [userName])
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

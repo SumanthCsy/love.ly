@@ -138,14 +138,16 @@ export default function MyReviewsPage() {
     }, [toast]);
 
   React.useEffect(() => {
-    fetchReviews();
-  }, [fetchReviews]);
+    if (isAuthenticated) {
+      fetchReviews();
+    }
+  }, [isAuthenticated, fetchReviews]);
 
   React.useEffect(() => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const filteredData = reviews.filter(item =>
       item.name.toLowerCase().includes(lowercasedFilter) ||
-      item.review?.toLowerCase().includes(lowercasedFilter)
+      (item.review && item.review.toLowerCase().includes(lowercasedFilter))
     );
     setFilteredReviews(filteredData);
   }, [searchTerm, reviews]);

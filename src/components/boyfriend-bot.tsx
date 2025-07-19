@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -72,7 +73,6 @@ export function BoyfriendBot() {
     if (!hasRated) {
         const timer = setTimeout(() => {
             setIsRatingOpen(true);
-            localStorage.setItem('hasRated', 'true'); // Set flag when it opens
         }, 60000); // 1 minute
         return () => clearTimeout(timer);
     }
