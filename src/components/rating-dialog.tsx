@@ -34,7 +34,9 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
   const handleOpenChange = (open: boolean) => {
     if (!open) {
         // If dialog is closed (skipped), mark as rated
-        localStorage.setItem('hasRated', 'true');
+        if (!localStorage.getItem('hasRated')) {
+            localStorage.setItem('hasRated', 'true');
+        }
     }
     onOpenChange(open);
   }
@@ -58,11 +60,21 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
     }
 
     setIsSubmitting(true);
+    
+    const submissionData: { name: string; rating: number; review?: string } = {
+        name: name.trim(),
+        rating: rating,
+    };
+
+    if (review.trim()) {
+        submissionData.review = review.trim();
+    }
+
     try {
       const response = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, rating, review }),
+        body: JSON.stringify(submissionData),
       });
 
       if (!response.ok) {
@@ -147,7 +159,7 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
               Skip
             </Button>
             <Button type="submit" disabled={isSubmitting}>
