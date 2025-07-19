@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, MessageSquare, Sparkles, Users } from "lucide-react";
+import { Heart, MessageSquare, Sparkles } from "lucide-react";
 
 interface HeartStyle {
   left: string;
@@ -71,10 +70,10 @@ export function LandingPage() {
 
       <div className="z-10 flex flex-col items-center text-center space-y-8">
         <div className="space-y-2">
-          <h1 className="text-7xl md:text-8xl font-headline tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-rose-600 to-pink-500">
+          <h1 className="text-7xl md:text-8xl font-headline tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-rose-600 to-pink-500 pb-4">
             Love.ly
           </h1>
-          <p className="max-w-xl text-lg text-muted-foreground pt-4">
+          <p className="max-w-xl text-lg text-muted-foreground">
             Rediscover the magic of conversation. A space for words that warm the heart, spark a smile, and bring you closer.
           </p>
         </div>
