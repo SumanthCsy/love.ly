@@ -28,7 +28,7 @@ export function SplashScreen() {
             fill="currentColor"
           />
         </div>
-        <h1 className="text-6xl md:text-8xl font-title tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-400">
+        <h1 className="text-6xl md:text-8xl font-headline tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-pink-400">
           Love.ly
         </h1>
       </div>

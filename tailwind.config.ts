@@ -19,7 +19,6 @@ export default {
       fontFamily: {
         body: ['Literata', 'serif'],
         headline: ['Literata', 'serif'],
-        title: ['"Dancing Script"', 'cursive'],
         code: ['monospace'],
       },
       colors: {
