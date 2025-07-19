@@ -1,4 +1,3 @@
-
 // Allow using client-side functionality
 "use client";
 
@@ -132,7 +131,7 @@ export default function MyReviewsPage() {
         <div className="w-full max-w-2xl space-y-4">
           {reviews.length > 0 ? (
             reviews.map((review) => (
-              <ReviewCard key={review._id.toString()} review={review} />
+              <ReviewCard key={review.id} review={review} />
             ))
           ) : (
             <p className="text-center text-muted-foreground">
