@@ -71,7 +71,7 @@ export function LandingPage() {
 
       <div className="z-10 flex flex-col items-center text-center space-y-8">
         <div className="space-y-2">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-rose-600 to-pink-500">
+          <h1 className="text-7xl md:text-8xl font-title tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-rose-600 to-pink-500">
             Love.ly
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground pt-4">
