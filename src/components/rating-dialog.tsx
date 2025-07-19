@@ -66,6 +66,8 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", errorData);
         throw new Error("Failed to submit review.");
       }
       
@@ -131,6 +133,7 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
+                required
               />
             </div>
             <div className="space-y-2">

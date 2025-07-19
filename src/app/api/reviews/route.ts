@@ -13,7 +13,7 @@ export interface Review extends WithId<Document> {
 const reviewSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   rating: z.number().min(1).max(5),
-  review: z.string().min(1, { message: "Review is required." }),
+  review: z.string().optional(),
 });
 
 export async function POST(request: Request) {
