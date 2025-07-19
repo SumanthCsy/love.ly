@@ -92,7 +92,7 @@ export function LandingPage() {
                     <Label htmlFor="your-name">Your Name</Label>
                     <Input
                       id="your-name"
-                      placeholder="e.g., Arjun,Sai..."
+                      placeholder="e.g., Arjun,Priya..."
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
                       required
@@ -102,7 +102,7 @@ export function LandingPage() {
                   <Label htmlFor="bot-name">Partner's Name</Label>
                   <Input
                     id="bot-name"
-                    placeholder="e.g., Priya,Siri..."
+                    placeholder="e.g., Sai,Siri..."
                     value={botName}
                     onChange={(e) => setBotName(e.target.value)}
                     required
