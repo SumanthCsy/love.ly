@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       console.error("Zod validation failed:", parsedData.error.flatten());
       return NextResponse.json({ error: "Validation failed", details: parsedData.error.flatten() }, { status: 400 });
     }
-
+    
     let client;
     try {
       client = await clientPromise;
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       const errorMessage = error instanceof Error ? error.message : "An unknown database connection error occurred";
       return NextResponse.json({ error: "Database connection failed", details: errorMessage }, { status: 500 });
     }
-    
+
     const db = client.db("lovely_app");
 
     const submission = {
