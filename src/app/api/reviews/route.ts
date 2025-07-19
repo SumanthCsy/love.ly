@@ -19,6 +19,8 @@ const reviewSchema = z.object({
 export async function POST(request: Request) {
   try {
     const json = await request.json();
+    console.log("Received review submission:", json);
+
     const parsedData = reviewSchema.safeParse(json);
 
     if (!parsedData.success) {
@@ -26,18 +28,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Validation failed", details: parsedData.error.flatten() }, { status: 400 });
     }
 
-    const client = await clientPromise;
+    let client;
+    try {
+      client = await clientPromise;
+    } catch (error) {
+      console.error("Failed to connect to MongoDB:", error);
+      const errorMessage = error instanceof Error ? error.message : "An unknown database connection error occurred";
+      return NextResponse.json({ error: "Database connection failed", details: errorMessage }, { status: 500 });
+    }
+    
     const db = client.db("lovely_app");
 
-    const result = await db.collection("reviews").insertOne({
+    const submission = {
       ...parsedData.data,
       createdAt: new Date(),
-    });
+    };
+
+    const result = await db.collection("reviews").insertOne(submission);
 
     return NextResponse.json({ message: "Review submitted successfully!", id: result.insertedId }, { status: 201 });
+
   } catch (error) {
-    console.error("Failed to submit review:", error);
-    // Ensure a descriptive error is returned
+    console.error("An unexpected error occurred in POST /api/reviews:", error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
   }
