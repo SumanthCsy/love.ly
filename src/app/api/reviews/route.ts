@@ -10,8 +10,6 @@ export interface Review extends WithId<Document> {
   createdAt: Date;
 }
 
-// FIX: The schema now correctly allows an empty string for the optional review.
-// The previous schema (`z.string().min(1).optional()`) would fail if an empty string was passed.
 const reviewSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   rating: z.number().min(1).max(5),
@@ -25,7 +23,7 @@ export async function POST(request: Request) {
 
     if (!parsedData.success) {
       console.error("Zod validation failed:", parsedData.error.flatten());
-      return NextResponse.json({ error: parsedData.error.flatten() }, { status: 400 });
+      return NextResponse.json({ error: "Validation failed", details: parsedData.error.flatten() }, { status: 400 });
     }
 
     const client = await clientPromise;
@@ -39,7 +37,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Review submitted successfully!", id: result.insertedId }, { status: 201 });
   } catch (error) {
     console.error("Failed to submit review:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    // Ensure a descriptive error is returned
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
   }
 }
 
@@ -55,6 +55,7 @@ export async function GET(request: Request) {
 
     } catch (error) {
         console.error("Failed to fetch reviews:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
     }
 }
