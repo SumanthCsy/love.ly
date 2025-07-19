@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Star, MessageCircle, Send } from "lucide-react";
+import { Star, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,6 +30,14 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
   const [review, setReview] = React.useState("");
   const [name, setName] = React.useState(userName);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+        // If dialog is closed (skipped), mark as rated
+        localStorage.setItem('hasRated', 'true');
+    }
+    onOpenChange(open);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,11 +73,13 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
         title: "Thank you!",
         description: "Your feedback has been submitted successfully.",
       });
+      localStorage.setItem('hasRated', 'true'); // Also mark as rated on successful submission
       onOpenChange(false);
       setRating(0);
       setReview("");
 
-    } catch (error) {
+    } catch (error)
+ {
       console.error(error);
       toast({
         variant: "destructive",
@@ -81,8 +91,14 @@ export function RatingDialog({ isOpen, onOpenChange, userName }: RatingDialogPro
     }
   };
 
+  React.useEffect(() => {
+      if(userName) {
+          setName(userName);
+      }
+  }, [userName])
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

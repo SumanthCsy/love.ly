@@ -67,16 +67,15 @@ export function BoyfriendBot() {
       router.push("/");
     }
 
-    // Open rating dialog after 1 minute
-    const timer = setTimeout(() => {
-        const hasRated = localStorage.getItem('hasRated');
-        if (!hasRated) {
+    // Open rating dialog after 1 minute if it hasn't been shown before
+    const hasRated = localStorage.getItem('hasRated');
+    if (!hasRated) {
+        const timer = setTimeout(() => {
             setIsRatingOpen(true);
-            localStorage.setItem('hasRated', 'true');
-        }
-    }, 60000); // 1 minute
-
-    return () => clearTimeout(timer);
+            localStorage.setItem('hasRated', 'true'); // Set flag when it opens
+        }, 60000); // 1 minute
+        return () => clearTimeout(timer);
+    }
   }, [router]);
 
   React.useEffect(() => {
