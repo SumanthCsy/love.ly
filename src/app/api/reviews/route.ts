@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, serverTimestamp, query, orderBy, DocumentData } from 'firebase/firestore';
+import { collection, addDoc, getDocs, serverTimestamp, query, orderBy, DocumentData, Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
 // Define the shape of a review document from Firestore
-export interface Review extends DocumentData {
+export interface Review {
   id: string;
   name: string;
   rating: number;
-  review: string;
+  review?: string;
   createdAt: Date;
 }
 
@@ -23,26 +23,21 @@ const reviewSchema = z.object({
 export async function POST(request: Request) {
   try {
     const json = await request.json();
-
-    // Validate the incoming data
     const parsedData = reviewSchema.safeParse(json);
 
     if (!parsedData.success) {
-      console.error("Validation failed:", parsedData.error.flatten());
       return NextResponse.json({ error: "Validation failed", details: parsedData.error.flatten() }, { status: 400 });
     }
 
-    // Add the review to the "reviews" collection in Firestore
     const docRef = await addDoc(collection(db, "reviews"), {
       ...parsedData.data,
-      createdAt: serverTimestamp(), // Use Firestore server timestamp
+      createdAt: serverTimestamp(),
     });
 
-    console.log("Document written with ID: ", docRef.id);
     return NextResponse.json({ message: "Review submitted successfully!", id: docRef.id }, { status: 201 });
 
   } catch (error) {
-    console.error("Error adding document: ", error);
+    console.error("Error in POST /api/reviews:", error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
   }
@@ -58,13 +53,17 @@ export async function GET(request: Request) {
         const reviews: Review[] = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            const createdAt = data.createdAt;
+            
+            // Firestore timestamp needs to be converted to a JS Date object
+            const createdAtDate = createdAt instanceof Timestamp ? createdAt.toDate() : new Date();
+
             reviews.push({
                 id: doc.id,
                 name: data.name,
                 rating: data.rating,
                 review: data.review,
-                // Firestore timestamp needs to be converted to a JS Date object
-                createdAt: data.createdAt.toDate(),
+                createdAt: createdAtDate,
             });
         });
 

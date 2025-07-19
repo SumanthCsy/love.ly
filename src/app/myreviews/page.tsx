@@ -28,7 +28,7 @@ function ReviewCard({ review }: { review: Review }) {
             <div>
                  <CardTitle className="text-lg">{review.name}</CardTitle>
                  <CardDescription>
-                    {format(new Date(review.createdAt), "MMMM d, yyyy")}
+                    {review.createdAt ? format(new Date(review.createdAt), "MMMM d, yyyy") : "Date not available"}
                 </CardDescription>
             </div>
             <div className="flex items-center gap-1">
@@ -37,9 +37,11 @@ function ReviewCard({ review }: { review: Review }) {
             </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">{review.review || "No review text submitted."}</p>
-      </CardContent>
+      {review.review && (
+        <CardContent>
+          <p className="text-muted-foreground">{review.review}</p>
+        </CardContent>
+      )}
     </Card>
   );
 }
@@ -59,7 +61,6 @@ export default function MyReviewsPage() {
     setIsLoading(true);
 
     // This is a simple client-side check.
-    // In a real-world app, you'd want to verify this on the server.
     if (password === "love.ly@admin0112") {
       toast({ title: "Access Granted", description: "Welcome, Admin!" });
       setIsAuthenticated(true);
